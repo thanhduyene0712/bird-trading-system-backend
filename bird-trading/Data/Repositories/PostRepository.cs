@@ -225,7 +225,7 @@ namespace bird_trading.Data.Repositories
             if (pageIndex != null && pageSize != null)
                 query = query.Skip(((int)pageIndex - 1) * (int)pageSize).Take((int)pageSize);
 
-            query = query.Where(w => w.PostTransaction != null && w.PostTransaction.Queue >= 1 && w.PostTransaction.EffectDate <= DateTime.UtcNow.AddHours(7));
+            query = query.Where(w => w.PostTransaction != null && w.PostTransaction.Queue > 1 && w.PostTransaction.EffectDate <= DateTime.UtcNow.AddHours(7));
             query = query.OrderBy(od => od.PostTransaction.Queue).ThenByDescending(q => q.CreateDate);
 
             return query.ToList();
