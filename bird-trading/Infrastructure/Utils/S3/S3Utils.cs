@@ -30,7 +30,7 @@ namespace bird_trading.Infrastructure.Utils.S3
                 {
                     InputStream = file.OpenReadStream(),
                     Key = fileName.ToString() + "." + fileExtension,
-                    BucketName = "freeswp391",
+                    BucketName = "cloudflare",
                     DisablePayloadSigning = true
                 };
 
