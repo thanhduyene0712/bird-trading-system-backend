@@ -373,7 +373,7 @@ namespace bird_trading.Data.Repositories
                                       }).ToList(),
                              PostTransaction = (from pt in _context.PostTransactions
                                                 join pack in _context.Packs on pt.PackId equals pack.Id
-                                                where pt.IsCancel == true && pt.EffectDate.AddDays(pt.ExpiredDay) > DateTime.UtcNow.AddHours(7) && pt.PostId == p.Id
+                                                where pt.IsCancel == true && pt.EffectDate >= DateTime.UtcNow.AddHours(7) && pt.PostId == p.Id
                                                 select new
                                                 {
                                                     Id = pt.Id,
@@ -383,6 +383,45 @@ namespace bird_trading.Data.Repositories
                                                     IsCancel = pt.IsCancel,
                                                 }).OrderByDescending(od => od.CreateDate).FirstOrDefault(),
                          }).AsQueryable();
+            var query1 = (from p in _context.Posts
+                         join c in _context.Categories on p.CategoryId equals c.Id
+                         where p.Status == 0
+                         select new
+                         {
+                             Id = p.Id,
+                             CreateDate = p.CreateDate,
+                             Title = p.Title,
+                             Description = p.Description,
+                             Price = p.Price,
+                             Address = p.Address,
+                             PhoneSeller = p.PhoneSeller,
+                             NameSeller = p.NameSeller,
+                             UserId = p.UserId,
+                             Status = p.Status,
+                             CategoryId = c.Id,
+                             CategoryTitle = c.Title,
+                             Media = (from m in _context.Medias
+                                      where m.PostId == p.Id
+                                      select new PostEntityDetailMedia
+                                      {
+                                          Id = m.Id,
+                                          Url = m.Url,
+                                          PostId = m.PostId,
+                                          Extension = m.Extension,
+                                      }).ToList(),
+                             PostTransaction = (from pt in _context.PostTransactions
+                                                join pack in _context.Packs on pt.PackId equals pack.Id
+                                                where pt.IsCancel == true && pt.EffectDate < DateTime.UtcNow.AddHours(7) && pt.PostId == p.Id
+                                                select new
+                                                {
+                                                    Id = pt.Id,
+                                                    CreateDate = pt.CreateDate,
+                                                    PackId = pack.Id,
+                                                    Queue = pack.Queue,
+                                                    IsCancel = pt.IsCancel,
+                                                }).OrderByDescending(od => od.CreateDate).FirstOrDefault(),
+                         }).AsQueryable();
+            query1 = query1.Where(w => w.Status == -1);
 
             if (categoryId != null)
                 query = query.Where(w => w.CategoryId == categoryId);
