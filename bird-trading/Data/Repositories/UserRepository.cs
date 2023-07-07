@@ -131,7 +131,7 @@ namespace bird_trading.Data.Repositories
             user.TotalBank = bankInfo.Count();
             user.BankInfomations = bankInfo.ToList();
             user.TotalPosts = posts.Count();
-            user.Posts = posts.ToList();
+            user.Posts = posts.OrderByDescending(u => u.CreateDate).ToList();
             user.TotalTransactions = transactions.Count();
             user.Transactions = transactions.ToList();
             user.Role = role.FirstOrDefault();
