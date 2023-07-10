@@ -373,7 +373,7 @@ namespace bird_trading.Data.Repositories
                                       }).ToList(),
                              PostTransaction = (from pt in _context.PostTransactions
                                                 join pack in _context.Packs on pt.PackId equals pack.Id
-                                                where pt.IsCancel == true && pt.EffectDate >= DateTime.UtcNow.AddHours(7) && pt.PostId == p.Id
+                                                where pt.IsCancel == true && pt.EffectDate.Date >= DateTime.UtcNow.AddHours(7).Date && pt.PostId == p.Id
                                                 select new
                                                 {
                                                     Id = pt.Id,
@@ -387,7 +387,7 @@ namespace bird_trading.Data.Repositories
             foreach (var item in query1)
             {
                 var qr = _context.PostTransactions.Where(a => a.PostId.Equals(item.Id)).OrderByDescending(a=>a.CreateDate).FirstOrDefault();
-                if(qr!.EffectDate < DateTime.UtcNow.AddHours(7))
+                if(qr!.EffectDate.Date < DateTime.UtcNow.AddHours(7).Date)
                 {
                     item.Status = -1;
                 }

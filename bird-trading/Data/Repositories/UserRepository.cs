@@ -127,7 +127,16 @@ namespace bird_trading.Data.Repositories
                        {
                            Name = r.Name
                        };
-
+            var query1 = _context.Posts.Where(a => a.Status == 0).ToList();
+            foreach (var item in query1)
+            {
+                var qr = _context.PostTransactions.Where(a => a.PostId.Equals(item.Id)).OrderByDescending(a => a.CreateDate).FirstOrDefault();
+                if (qr!.EffectDate.Date < DateTime.UtcNow.AddHours(7).Date)
+                {
+                    item.Status = -1;
+                }
+            }
+            _context.SaveChanges();
             user.TotalBank = bankInfo.Count();
             user.BankInfomations = bankInfo.ToList();
             user.TotalPosts = posts.Count();

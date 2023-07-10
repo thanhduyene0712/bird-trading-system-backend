@@ -69,7 +69,7 @@ namespace bird_trading.Core.Services
                 Id = postTransaction.Id,
                 Price = postTransaction.Price,
                 CreateDate = DateTime.UtcNow.AddHours(7),
-                EffectDate = postTransaction.EffectDate,
+                EffectDate = postTransaction.EffectDate.AddHours(7),
                 ExpiredDay = postTransaction.ExpiredDay,
                 IsCancel = true,
                 PackId = postTransaction.PackId,
